@@ -9,6 +9,7 @@ import { OnlineService } from './online.service';
 import appLog from '../utils/appLog';
 import { Server } from 'socket.io';
 import MsSqlManager from '../sql/MsSqlManager';
+import getDateTime from '../utils/getDateTime';
 const clc = require('cli-color');
 const DATE_DIFF = require('date-diff-js');
 
@@ -51,7 +52,7 @@ export class OnlineGateway implements OnModuleInit {
         [smartace.analytics.sessionTime]
           (session_time, session_date)
         VALUES
-          (${delta}, GETDATE())
+          (${delta}, convert(DATETIME, '${getDateTime()}'))
         `);
       });
     });
