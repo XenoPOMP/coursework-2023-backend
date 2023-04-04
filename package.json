@@ -26,6 +26,8 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^9.3.12",
     "@nestjs/websockets": "^9.3.12",
+    "cli-color": "^2.0.3",
+    "date-diff-js": "^1.0.4",
     "dotenv": "^16.0.3",
     "mssql": "^9.1.1",
     "reflect-metadata": "^0.1.13",
