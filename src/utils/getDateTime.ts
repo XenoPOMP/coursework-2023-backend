@@ -1,4 +1,4 @@
-const getDateTime = (): string => {
+const getDateTime = (config?: { sqlLike?: boolean }): string => {
   const date = new Date();
 
   const refactorDate = (input: number): string => {
@@ -16,6 +16,12 @@ const getDateTime = (): string => {
   const hours = (): string => refactorDate(date.getHours());
   const minutes = (): string => refactorDate(date.getMinutes());
   const seconds = (): string => refactorDate(date.getSeconds());
+
+  if (config?.sqlLike) {
+    return `${year()}${month()}${day()} ${
+      date.getHours() < 12 ? hours() : date.getHours() - 12
+    }:${minutes()}:${seconds()} ${date.getHours() < 12 ? 'AM' : 'PM'}`;
+  }
 
   return `${day()}.${month()}.${year()}, ${hours()}:${minutes()}:${seconds()}`;
 };
