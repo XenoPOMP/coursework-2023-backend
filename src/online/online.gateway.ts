@@ -49,9 +49,9 @@ export class OnlineGateway implements OnModuleInit {
         await this.sqlManager.execQuery(`
         INSERT INTO
         [smartace.analytics.sessionTime]
-          (session_time)
+          (session_time, session_date)
         VALUES
-          (${delta})
+          (${delta}, GETDATE())
         `);
       });
     });
