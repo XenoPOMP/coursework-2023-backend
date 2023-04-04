@@ -52,7 +52,9 @@ export class OnlineGateway implements OnModuleInit {
         [smartace.analytics.sessionTime]
           (session_time, session_date)
         VALUES
-          (${delta}, convert(DATETIME, '${getDateTime()}'))
+          (${delta}, convert(datetime, '${getDateTime({
+          sqlLike: true,
+        })}', 105))
         `);
       });
     });
