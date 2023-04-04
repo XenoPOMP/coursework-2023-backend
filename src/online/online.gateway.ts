@@ -8,6 +8,7 @@ import { OnModuleInit } from '@nestjs/common';
 import { OnlineService } from './online.service';
 import appLog from '../utils/appLog';
 import { Server } from 'socket.io';
+import MsSqlManager from '../sql/MsSqlManager';
 const clc = require('cli-color');
 const DATE_DIFF = require('date-diff-js');
 
@@ -22,17 +23,19 @@ export class OnlineGateway implements OnModuleInit {
   @WebSocketServer()
   server: Server;
 
+  sqlManager: MsSqlManager = new MsSqlManager();
+
   loggerPrefix: string = clc.green('[WS:ONLINE]');
 
   onModuleInit() {
-    this.server.on('connection', (socket) => {
+    this.server.on('connection', async (socket) => {
       const uuid = socket.id;
       const connectionTime = new Date();
 
       appLog(this.loggerPrefix, `User ID: ${clc.greenBright(uuid)}`);
       appLog(this.loggerPrefix, `Connection established`);
 
-      socket.on('disconnect', (reason) => {
+      socket.on('disconnect', async (reason) => {
         const disconnectTime = new Date();
         const delta = DATE_DIFF(disconnectTime, connectionTime, 's').output;
 
@@ -42,6 +45,14 @@ export class OnlineGateway implements OnModuleInit {
             reason,
           )}. Session lasted for ${clc.greenBright(`${delta}s`)}`,
         );
+
+        await this.sqlManager.execQuery(`
+        INSERT INTO
+        [smartace.analytics.sessionTime]
+          (session_time)
+        VALUES
+          (${delta})
+        `);
       });
     });
   }

@@ -26,11 +26,9 @@ class MsSqlManager {
       '========================== Query start ==========================',
     );
 
-    let pool;
-
     // prettier-ignore
     try {
-      pool = await sql.connect(config);
+      let pool = await sql.connect(config);
       appLog(this.messagePrefix, `SQL Server connected...`);
 
       let res = await pool.request().query(query).then(res => {
@@ -38,16 +36,13 @@ class MsSqlManager {
         return res;
       });
 
-      appLog(this.messagePrefix, `Find ${res?.recordsets[0].length} results.`);
+      appLog(this.messagePrefix, `Find results: ${res?.recordsets[0] !== undefined ? res?.recordsets[0].length : 'none'}.`);
 
       console.log('=========================== Query end ===========================');
-      return res.recordsets;
+      return res.recordsets as QResult;
     }
     catch (error) {
       appLog(this.messagePrefix, `${clc.red('mathus-error')}: ${error}`);
-    }
-    finally {
-      pool.close();
     }
 
     console.log(
