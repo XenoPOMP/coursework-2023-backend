@@ -4,7 +4,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { OnModuleInit } from '@nestjs/common';
+import { Get, OnModuleInit, Param, Query } from '@nestjs/common';
 import { OnlineService } from './online.service';
 import appLog from '../utils/appLog';
 import { Server } from 'socket.io';
@@ -27,15 +27,29 @@ export class OnlineGateway implements OnModuleInit {
   sqlManager: MsSqlManager = new MsSqlManager();
 
   loggerPrefix: string = clc.green('[WS:ONLINE]');
+  errPrefix: string = clc.red('[ERR]');
 
   onModuleInit() {
     this.server.on('connection', async (socket) => {
       const uuid = socket.id;
       const connectionTime = new Date();
+      const allowed =
+        /allow=\w+/gi
+          .exec(socket.conn.request.url)
+          .toString()
+          .replace('allow=', '') === 'true';
 
+      // Check if analytics are not allowed on client
+      if (!allowed) {
+        appLog(this.errPrefix, `Changes are forbidden due access level`);
+        return;
+      }
+
+      // Log user connection
       appLog(this.loggerPrefix, `User ID: ${clc.greenBright(uuid)}`);
       appLog(this.loggerPrefix, `Connection established`);
 
+      // On user disconnect
       socket.on('disconnect', async (reason) => {
         const disconnectTime = new Date();
         const delta = DATE_DIFF(disconnectTime, connectionTime, 's').output;
