@@ -22,14 +22,10 @@ class MsSqlManager {
   private messagePrefix: string = clc.blueBright('[MSSQL]');
 
   public async execQuery<QResult>(query: string): Promise<QResult> {
-    console.log(
-      '========================== Query start ==========================',
-    );
-
     // prettier-ignore
     try {
       let pool = await sql.connect(config);
-      appLog(this.messagePrefix, `SQL Server connected...`);
+      appLog(this.messagePrefix, `Pool opened...`);
 
       let res = await pool.request().query(query).then(res => {
         appLog(this.messagePrefix, `Request fulfilled successfully...`);
@@ -38,16 +34,14 @@ class MsSqlManager {
 
       appLog(this.messagePrefix, `Find results: ${res?.recordsets[0] !== undefined ? res?.recordsets[0].length : 'none'}.`);
 
-      console.log('=========================== Query end ===========================');
+      await pool.close();
+      appLog(this.messagePrefix, `Pool closed...`);
+
       return res.recordsets as QResult;
     }
     catch (error) {
       appLog(this.messagePrefix, `${clc.red('mathus-error')}: ${error}`);
     }
-
-    console.log(
-      '========================== Query end ==========================',
-    );
   }
 }
 
