@@ -33,9 +33,12 @@ export class OnlineGateway implements OnModuleInit {
 
   onModuleInit() {
     this.server.on('connection', async (socket) => {
+      // Get socket id
       const uuid = socket.id;
+      // Save connection open time
       const connectionTime = new Date();
 
+      // Parse data from search params
       const allowed =
         parseSearchParams(socket.conn.request.url)['allow'] === 'true';
       const jwt = parseSearchParams(socket.conn.request.url)['jwt'];
@@ -53,9 +56,12 @@ export class OnlineGateway implements OnModuleInit {
 
       // On user disconnect
       socket.on('disconnect', async (reason) => {
+        // Save socket disconnect time
         const disconnectTime = new Date();
+        // Calculate user session time in seconds
         const delta = DATE_DIFF(disconnectTime, connectionTime, 's').output;
 
+        // Log info about disconnect
         appLog(
           this.loggerPrefix,
           `Socket ${clc.greenBright(
@@ -65,6 +71,7 @@ export class OnlineGateway implements OnModuleInit {
           )}. Session lasted for ${clc.greenBright(`${delta}s`)}`,
         );
 
+        // Execute SQL query
         await this.sqlManager.execQuery(`
         INSERT INTO
         [smartace.analytics.sessionTime]
