@@ -38,10 +38,14 @@ export class OnlineGateway implements OnModuleInit {
       // Save connection open time
       const connectionTime = new Date();
 
+      console.log(socket.conn.request.url);
+
       // Parse data from search params
       const allowed =
         parseSearchParams(socket.conn.request.url)['allow'] === 'true';
-      const jwt = parseSearchParams(socket.conn.request.url)['jwt'];
+      const sessionToken = parseSearchParams(socket.conn.request.url)[
+        'sessionToken'
+      ];
 
       // Check if analytics are not allowed on client
       if (!allowed) {
@@ -51,7 +55,10 @@ export class OnlineGateway implements OnModuleInit {
 
       // Log user connection
       appLog(this.loggerPrefix, `Socket ID: ${clc.greenBright(uuid)}`);
-      appLog(this.loggerPrefix, `JWT: ${clc.greenBright(jwt)}`);
+      appLog(
+        this.loggerPrefix,
+        `Session token: ${clc.greenBright(sessionToken)}`,
+      );
       appLog(this.loggerPrefix, `Connection established`);
 
       // On user disconnect
@@ -77,7 +84,7 @@ export class OnlineGateway implements OnModuleInit {
         [smartace.analytics.sessionTime]
           (session_token, session_time, session_date)
         VALUES
-          ('${jwt}', ${delta}, convert(datetime, '${getDateTime({
+          ('${sessionToken}', ${delta}, convert(datetime, '${getDateTime({
           sqlLike: true,
         })}', 105))
         `);
