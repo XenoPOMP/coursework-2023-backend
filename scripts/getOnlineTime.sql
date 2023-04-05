@@ -1,4 +1,3 @@
-
 SELECT MAX(session_time) as 'session_time', session_date
 FROM [smartace.analytics.sessionTime]
 WHERE session_time != 0
