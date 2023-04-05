@@ -4,12 +4,14 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Get, OnModuleInit, Param, Query } from '@nestjs/common';
+import { OnModuleInit } from '@nestjs/common';
 import { OnlineService } from './online.service';
 import appLog from '../utils/appLog';
 import { Server } from 'socket.io';
 import MsSqlManager from '../sql/MsSqlManager';
 import getDateTime from '../utils/getDateTime';
+import parseSearchParams from '../utils/parseSearchParams';
+
 const clc = require('cli-color');
 const DATE_DIFF = require('date-diff-js');
 
@@ -34,12 +36,8 @@ export class OnlineGateway implements OnModuleInit {
       const uuid = socket.id;
       const connectionTime = new Date();
 
-      const allowed =
-        /allow=\w+&/i
-          ?.exec(socket.conn.request.url)
-          ?.toString()
-          ?.replace(/(allow=)|&/gi, '') === 'true';
-      const jwt = socket.conn.request.url.split('&')[1].replace('jwt=', '');
+      const allowed = parseSearchParams(socket.conn.request.url)['allow'];
+      const jwt = parseSearchParams(socket.conn.request.url)['jwt'];
 
       // Check if analytics are not allowed on client
       if (!allowed) {
@@ -48,7 +46,7 @@ export class OnlineGateway implements OnModuleInit {
       }
 
       // Log user connection
-      appLog(this.loggerPrefix, `User ID: ${clc.greenBright(uuid)}`);
+      appLog(this.loggerPrefix, `Socket ID: ${clc.greenBright(uuid)}`);
       appLog(this.loggerPrefix, `JWT: ${clc.greenBright(jwt)}`);
       appLog(this.loggerPrefix, `Connection established`);
 
@@ -59,7 +57,9 @@ export class OnlineGateway implements OnModuleInit {
 
         appLog(
           this.loggerPrefix,
-          `User ${clc.greenBright(uuid)} disconnect due to ${clc.yellow(
+          `Socket ${clc.greenBright(
+            uuid,
+          )} has been disconnected due to ${clc.yellow(
             reason,
           )}. Session lasted for ${clc.greenBright(`${delta}s`)}`,
         );
