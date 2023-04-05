@@ -36,7 +36,8 @@ export class OnlineGateway implements OnModuleInit {
       const uuid = socket.id;
       const connectionTime = new Date();
 
-      const allowed = parseSearchParams(socket.conn.request.url)['allow'];
+      const allowed =
+        parseSearchParams(socket.conn.request.url)['allow'] === 'true';
       const jwt = parseSearchParams(socket.conn.request.url)['jwt'];
 
       // Check if analytics are not allowed on client
