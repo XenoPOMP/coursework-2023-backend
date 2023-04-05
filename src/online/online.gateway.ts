@@ -33,11 +33,13 @@ export class OnlineGateway implements OnModuleInit {
     this.server.on('connection', async (socket) => {
       const uuid = socket.id;
       const connectionTime = new Date();
+
       const allowed =
-        /allow=\w+/gi
-          .exec(socket.conn.request.url)
-          .toString()
-          .replace('allow=', '') === 'true';
+        /allow=\w+&/i
+          ?.exec(socket.conn.request.url)
+          ?.toString()
+          ?.replace(/(allow=)|&/gi, '') === 'true';
+      const jwt = socket.conn.request.url.split('&')[1].replace('jwt=', '');
 
       // Check if analytics are not allowed on client
       if (!allowed) {
@@ -47,6 +49,7 @@ export class OnlineGateway implements OnModuleInit {
 
       // Log user connection
       appLog(this.loggerPrefix, `User ID: ${clc.greenBright(uuid)}`);
+      appLog(this.loggerPrefix, `JWT: ${clc.greenBright(jwt)}`);
       appLog(this.loggerPrefix, `Connection established`);
 
       // On user disconnect
@@ -64,9 +67,9 @@ export class OnlineGateway implements OnModuleInit {
         await this.sqlManager.execQuery(`
         INSERT INTO
         [smartace.analytics.sessionTime]
-          (session_time, session_date)
+          (session_token, session_time, session_date)
         VALUES
-          (${delta}, convert(datetime, '${getDateTime({
+          ('${jwt}', ${delta}, convert(datetime, '${getDateTime({
           sqlLike: true,
         })}', 105))
         `);
