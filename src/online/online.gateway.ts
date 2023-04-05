@@ -38,8 +38,6 @@ export class OnlineGateway implements OnModuleInit {
       // Save connection open time
       const connectionTime = new Date();
 
-      console.log(socket.conn.request.url);
-
       // Parse data from search params
       const allowed =
         parseSearchParams(socket.conn.request.url)['allow'] === 'true';
