@@ -37,13 +37,16 @@ export class DatediffService {
     return await this.sqlManager.execQuery<DatediffDto[][]>(`
     SELECT 
       MAX(session_time) as 'session_time',
-      session_date
+      session_date,
+      session_device
     FROM [smartace.analytics.sessionTime]
     WHERE 
       session_time != 0
       AND
       ${sortCondition}
-    GROUP BY session_token, session_date
+      AND
+      session_device IS NOT NULL
+    GROUP BY session_token, session_date, session_device
     ORDER BY session_date ASC
     `);
   }
