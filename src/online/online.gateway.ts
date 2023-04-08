@@ -44,6 +44,7 @@ export class OnlineGateway implements OnModuleInit {
       const sessionToken = parseSearchParams(socket.conn.request.url)[
         'sessionToken'
       ];
+      const userDevice = parseSearchParams(socket.conn.request.url)['device'];
 
       // Check if analytics are not allowed on client
       if (!allowed) {
@@ -80,11 +81,16 @@ export class OnlineGateway implements OnModuleInit {
         await this.sqlManager.execQuery(`
         INSERT INTO
         [smartace.analytics.sessionTime]
-          (session_token, session_time, session_date)
+          (session_token, session_time, session_date, session_device)
         VALUES
-          ('${sessionToken}', ${delta}, convert(datetime, '${getDateTime({
-          sqlLike: true,
-        })}', 105))
+          (
+            '${sessionToken}', 
+            ${delta}, 
+            convert(datetime, '${getDateTime({
+              sqlLike: true,
+            })}', 105),
+            '${userDevice}'
+          )
         `);
       });
     });
