@@ -7,7 +7,10 @@ import LoginDto from '../login/login.dto';
 export class LoginService {
   private sqlManager: MsSqlManager = new MsSqlManager();
 
-  async findOne(@Body() dto: LoginDto): Promise<string> {
+  async findOne(@Body() dto: LoginDto): Promise<{
+    uuid: string;
+    matches: number;
+  }> {
     const { login, password } = dto;
 
     return await this.sqlManager
@@ -21,6 +24,18 @@ export class LoginService {
         admin_password = '${password}'
     `,
       )
-      .then((res) => res[0][0].admin_uuid);
+      .then((res) => {
+        if (res[0].length === 0) {
+          return {
+            uuid: null,
+            matches: 0,
+          };
+        }
+
+        return {
+          uuid: res[0][0].admin_uuid,
+          matches: 1,
+        };
+      });
   }
 }

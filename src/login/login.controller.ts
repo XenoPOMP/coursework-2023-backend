@@ -13,10 +13,10 @@ export class LoginController {
   ): Promise<{ response: LoginResponse; uuid: string }> {
     const findOne = await this.loginService.findOne(dto);
 
-    if (findOne !== '') {
+    if (findOne.matches !== 0) {
       return {
         response: 'logged',
-        uuid: findOne,
+        uuid: findOne.uuid,
       };
     }
 
