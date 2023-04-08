@@ -8,12 +8,14 @@ export class DatediffService {
   private sqlManager: MsSqlManager = new MsSqlManager();
 
   async getDiff(@Param('datepart') datePart): Promise<DatediffDto[][]> {
+    // SQL sort condition
     let sortCondition = `DATEDIFF(${datePart}, GETDATE(), CONVERT(DATETIME, '${getDateTime(
       {
         sqlLike: true,
       },
     )}')) < 1`;
 
+    // Allowed SQL DATEPARTs
     // prettier-ignore
     const allowedDateParts = [
       'year', 'yy', 'yyyy',
@@ -30,10 +32,12 @@ export class DatediffService {
       'microsecond', 'mcs'
     ];
 
+    // Param is not allowed
     if (!allowedDateParts.includes(datePart)) {
       throw new HttpException('Wrong date part', 400);
     }
 
+    // Execute SQL query
     return await this.sqlManager.execQuery<DatediffDto[][]>(`
     SELECT 
       MAX(session_time) as 'session_time',
