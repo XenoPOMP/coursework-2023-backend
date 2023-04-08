@@ -20,6 +20,8 @@ export class DevicesService {
           session_time != 0
           AND
           session_device IS NOT NULL
+          AND
+          session_device != 'undefined'
         GROUP BY session_token, session_date, session_device
         ORDER BY session_date ASC
       `,
@@ -44,6 +46,8 @@ export class DevicesService {
           session_time != 0
           AND
           session_device IS NOT NULL
+          AND
+          session_device != 'undefined'
           AND
           session_device = '${platform}'
         GROUP BY session_token, session_date, session_device
