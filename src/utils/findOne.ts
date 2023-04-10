@@ -1,6 +1,6 @@
-import MsSqlManager from '../sql/MsSqlManager';
-import appLog from './appLog';
-import appPrefixes from './appPrefixes';
+import MsSqlManager from '@sql/MsSqlManager';
+import appLog from '@utils/appLog';
+import appPrefixes from '@utils/appPrefixes';
 
 const findOne = async (token: string): Promise<boolean> => {
   const sqlManager: MsSqlManager = new MsSqlManager();

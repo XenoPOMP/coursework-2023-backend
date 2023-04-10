@@ -5,11 +5,11 @@ import {
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
-import MsSqlManager from '../sql/MsSqlManager';
-import DatediffDto from '../datediff/datediff.dto';
-import allowedDateParts from '../types/allowedDateParts';
-import getDateTime from '../utils/getDateTime';
-import findOne from '../utils/findOne';
+import MsSqlManager from '@/sql/MsSqlManager';
+import DatediffDto from '@/datediff/datediff.dto';
+import allowedDateParts from '@type/allowedDateParts';
+import getDateTime from '@/utils/getDateTime';
+import findOne from '@/utils/findOne';
 
 @Injectable()
 export class DevicesService {

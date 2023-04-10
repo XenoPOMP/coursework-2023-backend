@@ -5,13 +5,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { OnModuleInit } from '@nestjs/common';
-import { OnlineService } from './online.service';
-import appLog from '../utils/appLog';
+import { OnlineService } from '@/online/online.service';
+import appLog from '@utils/appLog';
 import { Server } from 'socket.io';
-import MsSqlManager from '../sql/MsSqlManager';
-import getDateTime from '../utils/getDateTime';
-import parseSearchParams from '../utils/parseSearchParams';
-import appPrefixes from '../utils/appPrefixes';
+import MsSqlManager from '@sql/MsSqlManager';
+import getDateTime from '@utils/getDateTime';
+import parseSearchParams from '@utils/parseSearchParams';
+import appPrefixes from '@utils/appPrefixes';
 
 const clc = require('cli-color');
 const DATE_DIFF = require('date-diff-js');

@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { DatediffService } from './datediff.service';
-import DatediffDto from './datediff.dto';
+import { DatediffService } from '@/datediff/datediff.service';
+import DatediffDto from '@/datediff/datediff.dto';
 
 @Controller('datediff')
 export class DatediffController {
