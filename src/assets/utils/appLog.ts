@@ -1,4 +1,4 @@
-import getDateTime from '@utils/getDateTime';
+import getDateTime from '@/assets/utils/getDateTime';
 
 require('dotenv').config();
 import * as clc from 'cli-color';

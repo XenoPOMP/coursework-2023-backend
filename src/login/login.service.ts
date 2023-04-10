@@ -1,7 +1,6 @@
 import { Body, Injectable } from '@nestjs/common';
-import { LoginResponse } from '@type/LoginResponse';
 import MsSqlManager from '@sql/MsSqlManager';
-import LoginDto from '@/login/login.dto';
+import LoginDto from './login.dto';
 
 @Injectable()
 export class LoginService {

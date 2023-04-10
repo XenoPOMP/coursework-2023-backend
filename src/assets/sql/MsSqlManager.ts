@@ -1,6 +1,6 @@
 import * as sql from 'mssql';
-import appLog from '@utils/appLog';
-import appPrefixes from '@utils/appPrefixes';
+import appLog from '@/assets/utils/appLog';
+import appPrefixes from '@/assets/utils/appPrefixes';
 
 require('dotenv').config();
 const env = process.env;

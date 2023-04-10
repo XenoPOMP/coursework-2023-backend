@@ -19,9 +19,10 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["src/*"],
-      "@sql/*": ["src/sql/*"],
-      "@type/*": ["src/types/*"],
-      "@utils/*": ["src/utils/*"]
+      "@sql/*": ["src/assets/sql/*"],
+      "@type/*": ["src/assets/types/*"],
+      "@utils/*": ["src/assets/utils/*"],
+      "@exception/*": ["src/assets/exception/*"],
     }
   }
 }

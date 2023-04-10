@@ -1,5 +1,5 @@
 import { HttpException, Injectable, Param } from '@nestjs/common';
-import DatediffDto from '@/datediff/datediff.dto';
+import DatediffDto from './datediff.dto';
 import MsSqlManager from '@sql/MsSqlManager';
 import getDateTime from '@utils/getDateTime';
 

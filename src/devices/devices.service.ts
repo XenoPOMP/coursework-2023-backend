@@ -1,15 +1,16 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   Param,
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
-import MsSqlManager from '@/sql/MsSqlManager';
+import MsSqlManager from '@sql/MsSqlManager';
 import DatediffDto from '@/datediff/datediff.dto';
 import allowedDateParts from '@type/allowedDateParts';
-import getDateTime from '@/utils/getDateTime';
-import findOne from '@/utils/findOne';
+import getDateTime from '@utils/getDateTime';
+import findOne from '@utils/findOne';
 
 @Injectable()
 export class DevicesService {
@@ -105,7 +106,7 @@ export class DevicesService {
   }> {
     // Param is not allowed
     if (!allowedDateParts.includes(datePart)) {
-      throw new HttpException('Wrong date part', 400);
+      throw new BadRequestException('Wrong date part');
     }
 
     // User is not authorized
