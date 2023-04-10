@@ -3,12 +3,13 @@ import DevicesDto from './devices.dto';
 import MsSqlManager from '../sql/MsSqlManager';
 import DatediffDto from '../datediff/datediff.dto';
 import allowedDateParts from '../types/allowedDateParts';
+import getDateTime from '../utils/getDateTime';
 
 @Injectable()
 export class DevicesService {
   private sqlManager: MsSqlManager = new MsSqlManager();
 
-  private async getDeviceCount(): Promise<number | undefined> {
+  private async getDeviceCount(datePart?: string): Promise<number | undefined> {
     return await this.sqlManager
       .execQuery<DatediffDto[][]>(
         `
@@ -23,6 +24,16 @@ export class DevicesService {
           session_device IS NOT NULL
           AND
           session_device != 'undefined'
+          ${
+            datePart !== undefined
+              ? `
+          AND
+          DATEDIFF(${datePart}, session_date, CONVERT(DATETIME, '${getDateTime({
+                  sqlLike: true,
+                })}')) <= 1
+          `
+              : ''
+          }
         GROUP BY session_token, session_date, session_device
         ORDER BY session_date ASC
       `,
@@ -34,6 +45,7 @@ export class DevicesService {
 
   private async getPlatformCount(
     platform: 'desktop' | 'mobile',
+    datePart?: string,
   ): Promise<number> {
     return await this.sqlManager
       .execQuery<DatediffDto[][]>(
@@ -51,6 +63,16 @@ export class DevicesService {
           session_device != 'undefined'
           AND
           session_device = '${platform}'
+          ${
+            datePart !== undefined
+              ? `
+          AND
+          DATEDIFF(${datePart}, session_date, CONVERT(DATETIME, '${getDateTime({
+                  sqlLike: true,
+                })}')) <= 1
+          `
+              : ''
+          }
         GROUP BY session_token, session_date, session_device
         ORDER BY session_date ASC
       `,
@@ -69,9 +91,9 @@ export class DevicesService {
       throw new HttpException('Wrong date part', 400);
     }
 
-    const desktopCount = await this.getPlatformCount('desktop');
-    const mobileCount = await this.getPlatformCount('mobile');
-    const totalCount = await this.getDeviceCount();
+    const desktopCount = await this.getPlatformCount('desktop', datePart);
+    const mobileCount = await this.getPlatformCount('mobile', datePart);
+    const totalCount = await this.getDeviceCount(datePart);
 
     return {
       desktop: (desktopCount / totalCount) * 100,
