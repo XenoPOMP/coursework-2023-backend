@@ -1,5 +1,10 @@
-import { HttpException, Injectable, Param } from '@nestjs/common';
-import DevicesDto from './devices.dto';
+import {
+  HttpException,
+  Injectable,
+  Param,
+  Query,
+  UnauthorizedException,
+} from '@nestjs/common';
 import MsSqlManager from '../sql/MsSqlManager';
 import DatediffDto from '../datediff/datediff.dto';
 import allowedDateParts from '../types/allowedDateParts';
@@ -40,6 +45,10 @@ export class DevicesService {
       `,
       )
       .then((res) => {
+        if (res === undefined) {
+          return 0;
+        }
+
         return res[0].length;
       });
   }
@@ -79,17 +88,29 @@ export class DevicesService {
       `,
       )
       .then((res) => {
+        if (res === undefined) {
+          return 0;
+        }
+
         return res[0].length;
       });
   }
 
-  async getPercents(@Param('datepart') datePart: string): Promise<{
+  async getPercents(
+    @Param('datepart') datePart: string,
+    @Query('uuid') uuid,
+  ): Promise<{
     desktop: number;
     mobile: number;
   }> {
     // Param is not allowed
     if (!allowedDateParts.includes(datePart)) {
       throw new HttpException('Wrong date part', 400);
+    }
+
+    // User is not authorized
+    if (!(await findOne(uuid))) {
+      throw new UnauthorizedException();
     }
 
     const desktopCount = await this.getPlatformCount('desktop', datePart);
