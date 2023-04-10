@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Param } from '@nestjs/common';
 import DevicesDto from './devices.dto';
 import MsSqlManager from '../sql/MsSqlManager';
 import DatediffDto from '../datediff/datediff.dto';
+import allowedDateParts from '../types/allowedDateParts';
 
 @Injectable()
 export class DevicesService {
@@ -59,10 +60,15 @@ export class DevicesService {
       });
   }
 
-  async getPercents(): Promise<{
+  async getPercents(@Param('datepart') datePart: string): Promise<{
     desktop: number;
     mobile: number;
   }> {
+    // Param is not allowed
+    if (!allowedDateParts.includes(datePart)) {
+      throw new HttpException('Wrong date part', 400);
+    }
+
     const desktopCount = await this.getPlatformCount('desktop');
     const mobileCount = await this.getPlatformCount('mobile');
     const totalCount = await this.getDeviceCount();
