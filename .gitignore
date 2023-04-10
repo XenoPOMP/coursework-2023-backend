@@ -12,11 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Vitest
-/coverage
-!/coverage/
-!/src/__tests__/__snapshots__/
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
