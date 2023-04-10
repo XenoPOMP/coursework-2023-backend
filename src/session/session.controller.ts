@@ -18,7 +18,7 @@ export class SessionController {
   async getAverageTime(
     @Param('datepart') datePart: string,
     @Query('uuid') uuid: string,
-  ): Promise<{ time: number }> {
+  ): Promise<number> {
     // Param is not allowed
     if (!allowedDateParts.includes(datePart)) {
       throw new BadRequestException('Wrong date part');
@@ -29,16 +29,14 @@ export class SessionController {
       throw new UnauthorizedException();
     }
 
-    return {
-      time: await this.sessionService.getAverageTime(datePart, uuid),
-    };
+    return await this.sessionService.getAverageTime(datePart, uuid);
   }
 
   @Get('/count/:datepart')
   async getSessionCount(
     @Param('datepart') datePart: string,
     @Query('uuid') uuid: string,
-  ): Promise<{ count: number }> {
+  ): Promise<number> {
     // Param is not allowed
     if (!allowedDateParts.includes(datePart)) {
       throw new BadRequestException('Wrong date part');
@@ -49,8 +47,6 @@ export class SessionController {
       throw new UnauthorizedException();
     }
 
-    return {
-      count: await this.sessionService.getSessionCount(datePart, uuid),
-    };
+    return await this.sessionService.getSessionCount(datePart, uuid);
   }
 }
