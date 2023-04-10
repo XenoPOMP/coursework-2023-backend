@@ -1,12 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 
 @Controller('devices')
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
-  @Get('/:datepart/')
-  async getDeviceCount(@Param('datepart') datePart: string) {
-    return this.devicesService.getPercents(datePart);
+  @Get('/:datepart')
+  async getDeviceCount(
+    @Param('datepart') datePart: string,
+    @Query('uuid') uuid,
+  ) {
+    return this.devicesService.getPercents(datePart, uuid);
   }
 }

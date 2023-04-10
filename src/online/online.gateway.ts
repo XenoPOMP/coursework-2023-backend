@@ -11,6 +11,7 @@ import { Server } from 'socket.io';
 import MsSqlManager from '../sql/MsSqlManager';
 import getDateTime from '../utils/getDateTime';
 import parseSearchParams from '../utils/parseSearchParams';
+import appPrefixes from '../utils/appPrefixes';
 
 const clc = require('cli-color');
 const DATE_DIFF = require('date-diff-js');
@@ -28,8 +29,8 @@ export class OnlineGateway implements OnModuleInit {
 
   sqlManager: MsSqlManager = new MsSqlManager();
 
-  loggerPrefix: string = clc.green('[WS:ONLINE]');
-  errPrefix: string = clc.red('[ERR]');
+  loggerPrefix: string = appPrefixes.webSocket;
+  errPrefix: string = appPrefixes.error;
 
   onModuleInit() {
     this.server.on('connection', async (socket) => {

@@ -1,5 +1,7 @@
 import * as sql from 'mssql';
 import appLog from '../utils/appLog';
+import appPrefixes from '../utils/appPrefixes';
+
 require('dotenv').config();
 const env = process.env;
 const clc = require('cli-color');
@@ -19,7 +21,7 @@ const config = {
 };
 
 class MsSqlManager {
-  private messagePrefix: string = clc.blueBright('[MSSQL]');
+  private messagePrefix: string = appPrefixes.mssql;
 
   public async execQuery<QResult>(query: string): Promise<QResult> {
     // prettier-ignore
